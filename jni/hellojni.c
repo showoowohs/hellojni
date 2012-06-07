@@ -111,13 +111,85 @@ Java_demo_ooieueioo_hellojni_stringFromJNI( JNIEnv* env,
 
 char bufmessage[1024];
 int open_switch = 0;
-static int fd;
+int fd;
 //add
 void open_devices(int start){
 	if(start == 1 && open_switch == 0){
 		fd = open("/dev/input/event1", O_RDONLY );
 		open_switch = 1;
 	}
+}
+
+void convert_evcode(char evcode, int evvalue){
+	switch (evcode)
+		{	
+			case ABS_X :
+				strcpy (ev_code, "ABS_X");
+				sprintf(bufmessage, ev_code );
+				break;
+			case ABS_Y :
+				strcpy (ev_code, "ABS_Y");
+				sprintf(bufmessage, ev_code );
+				break;
+			case ABS_X_2 :
+				strcpy (ev_code, "ABS_X_2");
+				sprintf(bufmessage, ev_code );
+				break;
+			case ABS_Y_2 :
+				strcpy (ev_code, "ABS_Y_2");
+				sprintf(bufmessage, ev_code );
+				break;
+				/////////////////////////////////////////////
+			case ABS_MT_TOUCH_MAJOR :
+				//strcpy (ev_code, "ABS_MT_TOUCH_MAJOR");
+				point_counter++; /// point to next x,y 
+				break;
+			case ABS_MT_TOUCH_MINOR :
+				strcpy (ev_code, "ABS_MT_TOUCH_MINOR");
+				sprintf(bufmessage, ev_code );
+				break;
+			case ABS_MT_WIDTH_MAJOR :
+				strcpy (ev_code, "ABS_MT_WIDTH_MAJOR");
+				sprintf(bufmessage, ev_code );
+				break;
+			case ABS_MT_WIDTH_MINOR :
+				strcpy (ev_code, "ABS_MT_WIDTH_MINOR");
+				sprintf(bufmessage, ev_code );
+				break;
+			case ABS_MT_ORIENTATION :
+				strcpy (ev_code, "ABS_MT_ORIENTATION");
+				sprintf(bufmessage, ev_code );
+				break;
+			case ABS_MT_POSITION_X :
+				//strcpy (ev_code, "ABS_MT_POSITION_X");
+				sprintf ( tmp_buffer,"X%02d[%05d]-",point_counter,evvalue);
+				strcat  (out_buffer,tmp_buffer);
+				sprintf(bufmessage, out_buffer );
+				break;
+			case ABS_MT_POSITION_Y :
+				//strcpy (ev_code, "ABS_MT_POSITION_Y");
+				sprintf ( tmp_buffer,"Y%02d[%05d]-",point_counter,evvalue);
+				strcat  (out_buffer,tmp_buffer);
+				sprintf(bufmessage, out_buffer );
+				break;
+			case ABS_MT_TOOL_TYPE :
+				strcpy (ev_code, "ABS_MT_TOOL_TYPE");
+				sprintf(bufmessage, ev_code );
+				break;
+			case  ABS_MT_BLOB_ID :
+				strcpy (ev_code, " ABS_MT_BLOB_ID");
+				sprintf(bufmessage, ev_code );
+				break;
+			case  ABS_MT_TRACKING_ID :
+				strcpy (ev_code, " ABS_MT_TRACKING_ID");
+				sprintf(bufmessage, ev_code );
+				break;
+			case  ABS_MT_PRESSURE :
+				strcpy (ev_code, " ABS_MT_PRESSURE");
+				sprintf(bufmessage, ev_code );
+				break;
+	} //// end switch EV_ABS
+	//sprintf(bufmessage, ev_code );
 }
 
 char* ReturnState(char *message){
@@ -196,78 +268,8 @@ char* ReturnState(char *message){
 					break;
 
 				case EV_ABS :
-					{
-						switch (ev.code)
-						{	
-							case ABS_X :
-								strcpy (ev_code, "ABS_X");
-								sprintf(bufmessage, ev_code );
-								break;
-							case ABS_Y :
-								strcpy (ev_code, "ABS_Y");
-								sprintf(bufmessage, ev_code );
-								break;
-							case ABS_X_2 :
-								strcpy (ev_code, "ABS_X_2");
-								sprintf(bufmessage, ev_code );
-								break;
-							case ABS_Y_2 :
-								strcpy (ev_code, "ABS_Y_2");
-								sprintf(bufmessage, ev_code );
-								break;
-								/////////////////////////////////////////////
-							case ABS_MT_TOUCH_MAJOR :
-								//strcpy (ev_code, "ABS_MT_TOUCH_MAJOR");
-								point_counter++; /// point to next x,y 
-								break;
-							case ABS_MT_TOUCH_MINOR :
-								strcpy (ev_code, "ABS_MT_TOUCH_MINOR");
-								sprintf(bufmessage, ev_code );
-								break;
-							case ABS_MT_WIDTH_MAJOR :
-								strcpy (ev_code, "ABS_MT_WIDTH_MAJOR");
-								sprintf(bufmessage, ev_code );
-								break;
-							case ABS_MT_WIDTH_MINOR :
-								strcpy (ev_code, "ABS_MT_WIDTH_MINOR");
-								sprintf(bufmessage, ev_code );
-								break;
-							case ABS_MT_ORIENTATION :
-								strcpy (ev_code, "ABS_MT_ORIENTATION");
-								sprintf(bufmessage, ev_code );
-								break;
-							case ABS_MT_POSITION_X :
-								//strcpy (ev_code, "ABS_MT_POSITION_X");
-								sprintf ( tmp_buffer,"X%02d[%05d]-",point_counter,ev.value);
-								strcat  (out_buffer,tmp_buffer);
-								sprintf(bufmessage, out_buffer );
-								break;
-							case ABS_MT_POSITION_Y :
-								//strcpy (ev_code, "ABS_MT_POSITION_Y");
-								sprintf ( tmp_buffer,"Y%02d[%05d]-",point_counter,ev.value);
-								strcat  (out_buffer,tmp_buffer);
-								sprintf(bufmessage, out_buffer );
-								break;
-							case ABS_MT_TOOL_TYPE :
-								strcpy (ev_code, "ABS_MT_TOOL_TYPE");
-								sprintf(bufmessage, ev_code );
-								break;
-							case  ABS_MT_BLOB_ID :
-								strcpy (ev_code, " ABS_MT_BLOB_ID");
-								sprintf(bufmessage, ev_code );
-								break;
-							case  ABS_MT_TRACKING_ID :
-								strcpy (ev_code, " ABS_MT_TRACKING_ID");
-								sprintf(bufmessage, ev_code );
-								break;
-							case  ABS_MT_PRESSURE :
-								strcpy (ev_code, " ABS_MT_PRESSURE");
-								sprintf(bufmessage, ev_code );
-								break;
-						} //// end switch EV_ABS
-						//sprintf(bufmessage, ev_code );
-						return bufmessage;
-					}    
+					convert_evcode(ev.code, ev.value);
+					return bufmessage;
 					break; ///// EV_ABS
 
 
