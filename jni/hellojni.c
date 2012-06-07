@@ -120,8 +120,8 @@ void open_devices(int start){
 	}
 }
 
-void convert_evcode(char evcode, int evvalue){
-	switch (evcode)
+	void convert_evcode(char evcode, int evvalue){
+		switch (evcode)
 		{	
 			case ABS_X :
 				strcpy (ev_code, "ABS_X");
@@ -188,9 +188,9 @@ void convert_evcode(char evcode, int evvalue){
 				strcpy (ev_code, " ABS_MT_PRESSURE");
 				sprintf(bufmessage, ev_code );
 				break;
-	} //// end switch EV_ABS
-	//sprintf(bufmessage, ev_code );
-}
+		} //// end switch EV_ABS
+		//sprintf(bufmessage, ev_code );
+	}
 
 char* ReturnState(char *message){
 	//add
