@@ -115,7 +115,7 @@ int fd;
 //add
 void open_devices(int start){
 	if(start == 1 && open_switch == 0){
-		fd = open("/dev/input/event1", O_RDONLY );
+		fd = open("/dev/input/event2", O_RDONLY );
 		open_switch = 1;
 	}
 }

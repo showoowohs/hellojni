@@ -4,20 +4,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.os.Handler;
 
 ;
 
@@ -39,7 +43,9 @@ public class hellojni extends Activity implements OnGestureListener {
 	private View Touch_View;
 	private int Total_Click = 0;
 	private GestureDetector detector;
-
+	private ListView maListViewPerso;
+	private ArrayList<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>();
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -89,6 +95,8 @@ public class hellojni extends Activity implements OnGestureListener {
 	private void initUI() {
 		tv = (TextView) findViewById(R.id.tv);
 		Touch_View = (View) findViewById(R.id.Touch_View);
+		maListViewPerso = (ListView) findViewById(R.id.listviewperso);
+		
 		this.detector = new GestureDetector(this);
 	}
 
@@ -109,10 +117,41 @@ public class hellojni extends Activity implements OnGestureListener {
 		Call_JNI_Text = stringFromJNI(1).toString();
 		tv.setText("You Click : " + (Total_Click) + "  \n" + Call_JNI_Text);
 		Log.i("stringFromJNI()", (Total_Click) + "  " + Call_JNI_Text);
+		setMap(Call_JNI_Text);
+		getMap();
 		Call_JNI_Text = " ";
 		// tv.append("Now Time : " +(this.time)+" "+ stringFromJNI());
 		// setContentView(tv);
 	}
+
+	public String setMap(String str) {
+		Log.i("setMap(String str)", "str = " + str.toString());
+		long dtMili = System.currentTimeMillis();
+		Date dt = new Date(dtMili);
+		//yyyy-MM-dd HH:mm:ss)
+		CharSequence Now_Time  = DateFormat.format("yyyy, MM/dd, hh:mm:ss", dt.getTime());
+//		Log.i("NewTextView()", "time == " + Now_Time);
+		HashMap<String,Object> map = new HashMap<String, Object>();
+		
+		map.put("time", Now_Time.toString());
+		map.put("Word", str.toString());
+
+		// map.put("img", String.valueOf(R.drawable.word));
+
+		listItem.add(map);
+		return str;
+	}
+	public void getMap(){
+		Log.i("getMap()", "Map Size = " + listItem.size());
+    	for(int i = 0 ;i < listItem.size(); i++){
+        	HashMap<String,Object> m = listItem.get(i);
+    			m.get("time");
+                m.get("Word");
+                Log.i("getMap()", "m.get(time) = " + m.get("time"));
+                Log.i("getMap()", "m.get(Word) = " + m.get("Word"));
+        }
+    }
+	
 
 	private void root() {
 		Runtime ex = Runtime.getRuntime();
