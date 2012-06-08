@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -43,7 +44,6 @@ public class hellojni extends Activity implements OnGestureListener {
 	private View Touch_View;
 	private int Total_Click = 0;
 	private GestureDetector detector;
-	private ListView maListViewPerso;
 	private ArrayList<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>();
 	
 	/** Called when the activity is first created. */
@@ -95,8 +95,6 @@ public class hellojni extends Activity implements OnGestureListener {
 	private void initUI() {
 		tv = (TextView) findViewById(R.id.tv);
 		Touch_View = (View) findViewById(R.id.Touch_View);
-		maListViewPerso = (ListView) findViewById(R.id.listviewperso);
-		
 		this.detector = new GestureDetector(this);
 	}
 
@@ -118,13 +116,13 @@ public class hellojni extends Activity implements OnGestureListener {
 		tv.setText("You Click : " + (Total_Click) + "  \n" + Call_JNI_Text);
 		Log.i("stringFromJNI()", (Total_Click) + "  " + Call_JNI_Text);
 		setMap(Call_JNI_Text);
-		getMap();
+//		getMap();
 		Call_JNI_Text = " ";
 		// tv.append("Now Time : " +(this.time)+" "+ stringFromJNI());
 		// setContentView(tv);
 	}
 
-	public String setMap(String str) {
+	private String setMap(String str) {
 		Log.i("setMap(String str)", "str = " + str.toString());
 		long dtMili = System.currentTimeMillis();
 		Date dt = new Date(dtMili);
@@ -141,7 +139,7 @@ public class hellojni extends Activity implements OnGestureListener {
 		listItem.add(map);
 		return str;
 	}
-	public void getMap(){
+	private void getMap(){
 		Log.i("getMap()", "Map Size = " + listItem.size());
     	for(int i = 0 ;i < listItem.size(); i++){
         	HashMap<String,Object> m = listItem.get(i);
@@ -151,7 +149,13 @@ public class hellojni extends Activity implements OnGestureListener {
                 Log.i("getMap()", "m.get(Word) = " + m.get("Word"));
         }
     }
-	
+	public void open_data(View v){
+//		Log.i("open_data(View v)", "Onclick");
+		Intent newIntent = new Intent(hellojni.this,
+              listItem_view.class);
+		newIntent.putExtra("HashMap", listItem);
+		startActivityForResult(newIntent, 7);
+	}
 
 	private void root() {
 		Runtime ex = Runtime.getRuntime();
