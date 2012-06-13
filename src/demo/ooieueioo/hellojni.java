@@ -20,7 +20,9 @@ import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,8 +43,11 @@ public class hellojni extends Activity implements OnGestureListener {
 	private int time = 0;
 	private TextView tv;
 	private Toast toast;
-	private View Touch_View;
+	private LinearLayout Touch_View;
+	private ScrollView ScrollView;
+	private TextView Text_View;
 	private int Total_Click = 0;
+	private int message_count = 0;
 	private GestureDetector detector;
 	private ArrayList<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>();
 	
@@ -93,8 +98,10 @@ public class hellojni extends Activity implements OnGestureListener {
 	}
 
 	private void initUI() {
-		tv = (TextView) findViewById(R.id.tv);
-		Touch_View = (View) findViewById(R.id.Touch_View);
+		this.Touch_View = (LinearLayout)findViewById(R.id.Touch_View);
+		this.ScrollView = (ScrollView)findViewById(R.id.ScrollView);
+		this.tv = (TextView) findViewById(R.id.tv);
+		this.Text_View = (TextView) findViewById(R.id.Text_View);
 		this.detector = new GestureDetector(this);
 	}
 
@@ -102,7 +109,16 @@ public class hellojni extends Activity implements OnGestureListener {
 		this.Touch_View.setOnTouchListener(new OnTouchListener() {
 
 			public boolean onTouch(View arg0, MotionEvent arg1) {
-				// System.out.println("Touch_Listene");
+//				 System.out.println("Touch_Listene");
+				return detector.onTouchEvent(arg1);
+			}
+
+		});
+		
+		this.ScrollView.setOnTouchListener(new OnTouchListener() {
+
+			public boolean onTouch(View arg0, MotionEvent arg1) {
+//				 System.out.println("ScrollView");
 				return detector.onTouchEvent(arg1);
 			}
 
@@ -113,7 +129,15 @@ public class hellojni extends Activity implements OnGestureListener {
 		System.out.println("You Click : " + Total_Click);
 		String Call_JNI_Text;
 		Call_JNI_Text = stringFromJNI(1).toString();
-		tv.setText("You Click : " + (Total_Click) + "  \n" + Call_JNI_Text);
+		this.tv.setText("You Click : " + (Total_Click));
+		String message = get_Now_Time().toString()+ "\n" + Call_JNI_Text + "\n\n";
+		message_count++;
+		if(message_count % 100 == 0){
+			Text_View.setText("");
+		}
+		this.Text_View.setText( message_count + ". " + message + this.Text_View.getText().toString() );
+		//this.Text_View.append(get_Now_Time().toString()+ "\n" + Call_JNI_Text + "\n\n");
+		
 		Log.i("stringFromJNI()", (Total_Click) + "  " + Call_JNI_Text);
 		setMap(Call_JNI_Text);
 //		getMap();
@@ -124,14 +148,10 @@ public class hellojni extends Activity implements OnGestureListener {
 
 	private String setMap(String str) {
 		Log.i("setMap(String str)", "str = " + str.toString());
-		long dtMili = System.currentTimeMillis();
-		Date dt = new Date(dtMili);
-		//yyyy-MM-dd HH:mm:ss)
-		CharSequence Now_Time  = DateFormat.format("yyyy, MM/dd, hh:mm:ss", dt.getTime());
-//		Log.i("NewTextView()", "time == " + Now_Time);
+		
 		HashMap<String,Object> map = new HashMap<String, Object>();
 		
-		map.put("time", Now_Time.toString());
+		map.put("time", get_Now_Time().toString());
 		map.put("Word", str.toString());
 
 		// map.put("img", String.valueOf(R.drawable.word));
@@ -139,6 +159,15 @@ public class hellojni extends Activity implements OnGestureListener {
 		listItem.add(map);
 		return str;
 	}
+	private CharSequence get_Now_Time() {
+		long dtMili = System.currentTimeMillis();
+		Date dt = new Date(dtMili);
+		//yyyy-MM-dd HH:mm:ss)
+		CharSequence Now_Time  = DateFormat.format("yyyy, MM/dd, hh:mm:ss", dt.getTime());
+//		Log.i("NewTextView()", "time == " + Now_Time);
+		return Now_Time;
+	}
+	
 	private void getMap(){
 		Log.i("getMap()", "Map Size = " + listItem.size());
     	for(int i = 0 ;i < listItem.size(); i++){
@@ -296,13 +325,15 @@ public class hellojni extends Activity implements OnGestureListener {
 			}
 		}
 	}
-
-	public boolean onDown(MotionEvent arg0) {
-		// TODO Auto-generated method stub
-		System.out.println("onDown");
+	private void set_msg(){
 		msg = new Message();
 		msg.arg1 = ++Total_Click;
 		hd.sendMessage(msg);
+	}
+	public boolean onDown(MotionEvent arg0) {
+		// TODO Auto-generated method stub
+		System.out.println("onDown");
+		set_msg();
 		return false;
 	}
 
@@ -310,31 +341,34 @@ public class hellojni extends Activity implements OnGestureListener {
 			float velocityY) {
 		// TODO Auto-generated method stub
 		System.out.println("onFling");
+		set_msg();
 		return false;
 	}
 
 	public void onLongPress(MotionEvent e) {
 		// TODO Auto-generated method stub\
 		System.out.println("onLongPress");
-
+		set_msg();
 	}
 
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
 			float distanceY) {
 		// TODO Auto-generated method stub
 		System.out.println("onScroll");
+		set_msg();
 		return false;
 	}
 
 	public void onShowPress(MotionEvent e) {
 		// TODO Auto-generated method stub
 		System.out.println("onShowPress");
-
+		set_msg();
 	}
 
 	public boolean onSingleTapUp(MotionEvent e) {
 		// TODO Auto-generated method stub
 		System.out.println("onSingleTapUp");
+//		set_msg();
 		return false;
 	}
 }
