@@ -3,16 +3,13 @@ package demo.ooieueioo;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;       //+cy.0629
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,10 +26,10 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.util.Log;                    //+cy.0629
+import android.util.Log;
 
 
-public class hellojni extends Activity implements OnGestureListener  {
+public class hellojni extends Activity implements OnGestureListener{
 
 	static {
 		System.loadLibrary("hellojni");
@@ -53,10 +50,8 @@ public class hellojni extends Activity implements OnGestureListener  {
 	private int message_count = 0;
 	private GestureDetector detector;
 	private ArrayList<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>();
-      
-	  //Date date = new Date();     //cy.0629.test.   If you add "new Data()" into here, the result cannot update data.
-	  //DateFormat dateformat;      //cy.0629.test
-	
+//	Date date = new Date();  //+clayder.0626
+	//DateFormat dateformat;
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -64,8 +59,8 @@ public class hellojni extends Activity implements OnGestureListener  {
 		setContentView(R.layout.main);
 		initUI();
 		root();
-		Touch_Listene();
-
+		 Touch_Listene();
+		//Touch_Listene(); //+clayder.0627
 		
 		// CommandWriter()
 		  /*
@@ -110,54 +105,33 @@ public class hellojni extends Activity implements OnGestureListener  {
 		this.ScrollView = (ScrollView)findViewById(R.id.ScrollView);
 		this.tv = (TextView) findViewById(R.id.tv);
 		this.Text_View = (TextView) findViewById(R.id.Text_View);
-		this.detector = new GestureDetector(this);//+po.0623 del
+		this.detector = new GestureDetector(this);
 	}
 
 	
-//      -cy.0629.del...... Build new function Touch_Listene
-//	private void Touch_Listene() {
-//		this.Touch_View.setOnTouchListener(new OnTouchListener() {
-//
-//			public boolean onTouch(View arg0, MotionEvent arg1) {
-//				 System.out.println("Touch_Listene");
-//				return detector.onTouchEvent(arg1);
-//			}
-//
-//		});
-//		
-//		this.ScrollView.setOnTouchListener(new OnTouchListener() {
-//
-//			public boolean onTouch(View arg0, MotionEvent arg1) {
-//				 System.out.println("ScrollView");
-//				return detector.onTouchEvent(arg1);
-//			}
-//
-//		});
-//	}
 
 	private void NewTextView(int Total_Click) {
 		System.out.println("You Click : " + Total_Click);
 		String Call_JNI_Text;
-		//String Call_JNI_Text_1;                                       // +clayder.0629.test
-		Call_JNI_Text = stringFromJNI(1).toString();          
+		//String Call_JNI_Text_1;   // +clayder.0629.test
+		Call_JNI_Text = stringFromJNI(1).toString();    // why why why clayder ? 
 		//Call_JNI_Text_1 = stringFromJNI(2).toString();    // +clayder.0629.test
 		
 		this.tv.setText("You Click : " + (Total_Click));
-	     //  String message = get_Now_Time().toString() + Call_JNI_Text + "\n ";      //+cy.test. modify
-		String message =  Call_JNI_Text + "\n";      //+cy.0706
-	        message_count++;
+	        String message = get_Now_Time().toString()+ "..><.." + Call_JNI_Text + "\n ";   //+clayder.neet modify
+	//	String message = get_Now_Time().toString()+ "\" + Call_JNI_Text + "\n\n";   //-clayder.neet modify
+		message_count++;
 		if(message_count % 100 == 0){
 			Text_View.setText("");
 		}
-		//this.Text_View.setText(message_count + "]" + message + "[" + this.Text_View.getText().toString() );  //send message clayder
-		this.Text_View.setText(this.Text_View.getText().toString() +  message );  //send message clayder
-
+		this.Text_View.setText(message_count + "." + message + "..." + this.Text_View.getText().toString() );  //send message clayder
+		//this.Text_View.append(get_Now_Time().toString()+ "\n" + Call_JNI_Text + "\n\n");
 		
 		Log.i("stringFromJNI()", (Total_Click) + "  " + Call_JNI_Text);
 		setMap(Call_JNI_Text);
 //		getMap();
 		Call_JNI_Text = " ";
-//		 tv.append("Now Time : " +(this.time)+" "+ stringFromJNI());
+		// tv.append("Now Time : " +(this.time)+" "+ stringFromJNI());
 		// setContentView(tv);
 	}
 
@@ -176,24 +150,16 @@ public class hellojni extends Activity implements OnGestureListener  {
 	}
 	private CharSequence get_Now_Time() {
 		long dtMili = System.currentTimeMillis();
-		Date dt = new Date(dtMili);    //-clayder.0702
+		Date dt = new Date(dtMili);
 		//yyyy-MM-dd HH:mm:ss)
 		
-		SimpleDateFormat formatter   =  new SimpleDateFormat("[ss.SSS]");
+		SimpleDateFormat formatter   =  new SimpleDateFormat("[ ss.SSS ]");
 		String now = formatter.format( new Date());
 		//CharSequence Now_Time  = DateFormat.format("yyyy, MM/dd, hh:mm:ss", dt.getTime());
 		//----- clayder,0626
 
 		//		Log.i("NewTextView()", "time == " + Now_Time);
 		return now;
-	}
-	public CharSequence get_Phone_Time() {
-		long dtMili = System.currentTimeMillis();
-		Date dt = new Date(dtMili);
-		//yyyy-MM-dd HH:mm:ss)
-		CharSequence Now_Time  = DateFormat.format("yyyy, MM/dd, hh:mm:ss", dt.getTime());
-		//		Log.i("NewTextView()", "time == " + Now_Time);
-		return Now_Time;
 	}
 	
 	private void getMap(){
@@ -257,9 +223,7 @@ public class hellojni extends Activity implements OnGestureListener  {
 					msg.arg1 = time++;
 					hd.sendMessage(msg);
 					// NewTextView();
-					Thread.currentThread();
-					Thread.sleep(500);
-					//Thread.currentThread().sleep(500);
+					Thread.currentThread().sleep(500);
 				} catch (Exception e) {
 					// TODO: handle exception
 				}
@@ -310,9 +274,7 @@ public class hellojni extends Activity implements OnGestureListener  {
 				getInputData();
 				if (this.cmd == null || this.cmd.size() <= 0) {
 					try {
-						Thread.currentThread();
-						Thread.sleep(10);
-						//Thread.currentThread().sleep(1000);
+						Thread.currentThread().sleep(1000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -328,9 +290,7 @@ public class hellojni extends Activity implements OnGestureListener  {
 				}
 				this.cmd.remove(0);
 				try {
-					Thread.currentThread();
-					Thread.sleep(10);
-					//Thread.currentThread().sleep(10);
+					Thread.currentThread().sleep(10);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -365,7 +325,7 @@ public class hellojni extends Activity implements OnGestureListener  {
 		msg.arg1 = ++Total_Click;
 		hd.sendMessage(msg);
 	}
-	private void touchAction(MotionEvent event)         //+cy.0629. add new function include down move up
+	private void touchAction(MotionEvent event)
 	{
 		// event.getAction() type ==> 0: down 1:up 2: move
 		switch(event.getAction())
@@ -390,7 +350,7 @@ public class hellojni extends Activity implements OnGestureListener  {
 	/**
 	 * touch listene
 	 */
-	private void Touch_Listene() {                     //+cy.0629. add new function
+	private void Touch_Listene() {
 		//¶Â¦âpanel
 		this.Touch_View.setOnTouchListener(new OnTouchListener() {
 			
@@ -406,57 +366,35 @@ public class hellojni extends Activity implements OnGestureListener  {
 
 			public boolean onTouch(View arg0, MotionEvent event) {
 				touchAction(event);
-				return false; //+po.0723
-				//return detector.onTouchEvent(event);
+				return detector.onTouchEvent(event);
 			}
 
 		});
 	}
-	public void ShowDialog(String str){
-		AlertDialog.Builder dialog = new AlertDialog.Builder(this);		
-	    dialog.setTitle("Inform")
-	    .setMessage(str.toString())
-	    .setNeutralButton("Exit", new OnClickListener() {
-	            public void onClick(DialogInterface dialog, int which) {
-	                    // TODO Auto-generated method stub
+	/**
+	 * ·Æ¹«DOWM
+	 */
+	public boolean onDown(MotionEvent arg0) {
+		return true;
+	}
 
-	            }
-
-	    }).show();
-	}
-	public void ShowToast(String str){
-		toast = Toast.makeText(hellojni.this, str.toString(),
-				Toast.LENGTH_SHORT);
-		toast.show();
-	}
-	
-	
-	public boolean onDown(MotionEvent e) {
-		// TODO Auto-generated method stub
-//		touchAction(e);
-		return false;
-	}
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
 			float velocityY) {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
+
 	public void onLongPress(MotionEvent e) {
-		// TODO Auto-generated method stub
-		touchAction(e);
 	}
+
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
 			float distanceY) {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
+
 	public void onShowPress(MotionEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
+
 	public boolean onSingleTapUp(MotionEvent e) {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
-	
 }

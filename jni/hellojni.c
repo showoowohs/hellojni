@@ -125,19 +125,19 @@ void open_devices(int start){
 		{	
 			case ABS_X :
 				strcpy (ev_code, "ABS_X");
-				sprintf(bufmessage, ev_code );
+			//	sprintf(bufmessage, ev_code );
 				break;
 			case ABS_Y :
 				strcpy (ev_code, "ABS_Y");
-				sprintf(bufmessage, ev_code );
+			//	sprintf(bufmessage, ev_code );
 				break;
 			case ABS_X_2 :
 				strcpy (ev_code, "ABS_X_2");
-				sprintf(bufmessage, ev_code );
+			//	sprintf(bufmessage, ev_code );
 				break;
 			case ABS_Y_2 :
 				strcpy (ev_code, "ABS_Y_2");
-				sprintf(bufmessage, ev_code );
+			//	sprintf(bufmessage, ev_code );
 				break;
 				/////////////////////////////////////////////
 			case ABS_MT_TOUCH_MAJOR :
@@ -146,47 +146,47 @@ void open_devices(int start){
 				break;
 			case ABS_MT_TOUCH_MINOR :
 				strcpy (ev_code, "ABS_MT_TOUCH_MINOR");
-				sprintf(bufmessage, ev_code );
+			//	sprintf(bufmessage, ev_code );
 				break;
 			case ABS_MT_WIDTH_MAJOR :
 				strcpy (ev_code, "ABS_MT_WIDTH_MAJOR");
-				sprintf(bufmessage, ev_code );
+			//	sprintf(bufmessage, ev_code );
 				break;
 			case ABS_MT_WIDTH_MINOR :
 				strcpy (ev_code, "ABS_MT_WIDTH_MINOR");
-				sprintf(bufmessage, ev_code );
+			//	sprintf(bufmessage, ev_code );
 				break;
 			case ABS_MT_ORIENTATION :
 				strcpy (ev_code, "ABS_MT_ORIENTATION");
-				sprintf(bufmessage, ev_code );
+			//	sprintf(bufmessage, ev_code );
 				break;
 			case ABS_MT_POSITION_X :
 				//strcpy (ev_code, "ABS_MT_POSITION_X");
 				sprintf ( tmp_buffer,"X%02d[%05d]-",point_counter,evvalue);
 				strcat  (out_buffer,tmp_buffer);
-				sprintf(bufmessage, out_buffer );
+			//	sprintf(bufmessage, out_buffer );
 				break;
 			case ABS_MT_POSITION_Y :
 				//strcpy (ev_code, "ABS_MT_POSITION_Y");
 				sprintf ( tmp_buffer,"Y%02d[%05d]-",point_counter,evvalue);
 				strcat  (out_buffer,tmp_buffer);
-				sprintf(bufmessage, out_buffer );
+			//	sprintf(bufmessage, out_buffer );
 				break;
 			case ABS_MT_TOOL_TYPE :
 				strcpy (ev_code, "ABS_MT_TOOL_TYPE");
-				sprintf(bufmessage, ev_code );
+			//	sprintf(bufmessage, ev_code );
 				break;
 			case  ABS_MT_BLOB_ID :
 				strcpy (ev_code, " ABS_MT_BLOB_ID");
-				sprintf(bufmessage, ev_code );
+			//	sprintf(bufmessage, ev_code );
 				break;
 			case  ABS_MT_TRACKING_ID :
 				strcpy (ev_code, " ABS_MT_TRACKING_ID");
-				sprintf(bufmessage, ev_code );
+			//	sprintf(bufmessage, ev_code );
 				break;
 			case  ABS_MT_PRESSURE :
 				strcpy (ev_code, " ABS_MT_PRESSURE");
-				sprintf(bufmessage, ev_code );
+			//	sprintf(bufmessage, ev_code );
 				break;
 		} //// end switch EV_ABS
 		//sprintf(bufmessage, ev_code );
@@ -201,6 +201,8 @@ char* ReturnState(char *message){
 
 	//printf(" Get Key = %d\n", 897899 );
 	sprintf(bufmessage, "");
+	
+//	sprintf(out_buffer, "");
 	//return bufmessage;
 
 
@@ -223,9 +225,8 @@ char* ReturnState(char *message){
 	fd_set readfds;
 	FD_ZERO( &readfds );
 	FD_SET( fd , &readfds );
-	printf(" open device node ok\n" );
-	strcpy ( out_buffer,"point start\n");
-	//		while( 1 )	{
+	
+	while( 1 )	{
 	if( select( fd+1, &readfds, NULL, NULL, NULL ) >0 )
 	{
 		input_event ev;
@@ -241,12 +242,14 @@ char* ReturnState(char *message){
 						{	 
 							// MT_Sync : Multitouch event end
 							//printf("%s", out_buffer ); 
-							strcpy ( bufmessage,out_buffer);
-							return bufmessage;
+							//strcpy ( bufmessage,out_buffer);
+							//return bufmessage;
 						}else if (SYN_REPORT==ev.code){   
-							printf("%s", out_buffer );  
+							//printf("%s", out_buffer );  
 							point_counter=0; 
-							printf("\n");
+							//printf("\n");
+							
+						    strcpy ( bufmessage,out_buffer);
 							sprintf ( out_buffer,"P%03d:",sys_counter);
 							sys_counter++;
 							//printf("Read X:%d, Y:%d\n, Btn_Touch:%d",tmpP.x,tmpP.y,tmpP.btn_touch);
@@ -254,8 +257,9 @@ char* ReturnState(char *message){
 							// Start read
 
 							//po add
-							sprintf(bufmessage, out_buffer );
-
+						//	sprintf(bufmessage, out_buffer );
+                           
+							return bufmessage;
 						}
 
 					}
@@ -269,13 +273,14 @@ char* ReturnState(char *message){
 
 				case EV_ABS :
 					convert_evcode(ev.code, ev.value);
-					return bufmessage;
+				//	convert_evcode(ev.code, ev.value);
+				//	return bufmessage;
 					break; ///// EV_ABS
 
 
 				default:
 					//strcpy (ev_type, "unknown data");
-					sprintf(ev_type,"unknown data type = %04x",ev.type);
+					//sprintf(ev_type,"unknown data type = %04x",ev.type);
 					//po add
 					sprintf(bufmessage, ev_type );
 					return bufmessage;
@@ -283,55 +288,20 @@ char* ReturnState(char *message){
 			//return bufmessage;
 			//printf("%s, code= %s, Value =%d\n", ev_type, ev_code, ev.value ); 
 			//	} /// REMOVE EV_SYN	
-			/*
-			   if( ev.type == EV_KEY )
-			   {
-			   printf(" Get Key = %d\n", ev.value );
-			   }
-			   else if( ev.type == EV_REL )
-			   {
-			   printf( "Get relative value \n" );
-			   }
-			   else if( ev.type == EV_ABS )
-			   {
-			   if( ev.code == ABS_X )	
-			   {
-			   printf( "Get abs. X = %d \n", ev.value );	
-
-			   }
-			   else if( ev.code == ABS_Y )
-			   {
-			   printf( "Get abs. Y = %d \n", ev.value );
-			   }
-			   else if( ev.code == ABS_X_2 )	
-			   {
-			   printf( "Get abs. X-2 = %d \n", ev.value );	
-
-			   }
-			   else if( ev.code == ABS_Y_2 )
-			   {
-			   printf( "Get abs. Y-2 = %d \n", ev.value );
-			   }
-			   else {
-			   printf(" Get unknown data type = %04x, code = %04x, Value =%d\n", ev.type, ev.code, ev.value ); 
-			   }
-			   }
-			   else
-			   {
-			   printf(" Get unknown data type = %04x, code = %04x, Value =%d\n", ev.type, ev.code, ev.value ); 
-			   }
-			 */
+			
 	}
 	else
 	{
 		printf(" Nothing read \n" );
 		sprintf(bufmessage, " Nothing read \n" );
 		return bufmessage;
+	} // if select
+	
 	}
-}
+} // while
 //}	
 //} else {
 
 //}
-return bufmessage;
+return out_buffer;
 }

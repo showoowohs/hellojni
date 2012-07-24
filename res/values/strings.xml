@@ -2,6 +2,7 @@
 <resources>
     <string name="hello">Please Click</string>
     <string name="app_name">Hellojni</string>
+    <string name="Historical_data">Historical data</string>
        
     <drawable name="red">#ff0000</drawable>
     <color name="gray">#999999</color>
