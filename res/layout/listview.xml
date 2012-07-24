@@ -17,6 +17,7 @@
     		android:layout_height="wrap_content"
     		android:text="Expotr to SDcard"
  	        />
+ 	  
  	</LinearLayout>
  	<LinearLayout 
  	    android:layout_width="fill_parent"

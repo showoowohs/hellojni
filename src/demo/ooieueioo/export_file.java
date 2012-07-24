@@ -66,7 +66,7 @@ public class export_file extends hellojni{
                         .append(System.getProperty(
                                 "line.separator"));
             }
-            contents.append("\n\n\n// " + get_Phone_Time() + " add\n\n");
+            contents.append("\n\n\n------------ // " + get_Phone_Time() + " add ------------\n\n");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

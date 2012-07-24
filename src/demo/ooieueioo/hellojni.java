@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import demo.ooieueioo.db.DbAdapter;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -53,7 +55,7 @@ public class hellojni extends Activity implements OnGestureListener  {
 	private int message_count = 0;
 	private GestureDetector detector;
 	private ArrayList<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>();
-      
+	private DbAdapter mDbHelper;
 	  //Date date = new Date();     //cy.0629.test.   If you add "new Data()" into here, the result cannot update data.
 	  //DateFormat dateformat;      //cy.0629.test
 	
@@ -65,7 +67,7 @@ public class hellojni extends Activity implements OnGestureListener  {
 		initUI();
 		root();
 		Touch_Listene();
-
+		mDbHelper = new DbAdapter(this);
 		
 		// CommandWriter()
 		  /*
@@ -217,7 +219,7 @@ public class hellojni extends Activity implements OnGestureListener  {
 	private void root() {
 		Runtime ex = Runtime.getRuntime();
 		String cmdBecomeSu = "su";
-		String script = "busybox chmod 777 /dev/input/event1\n";
+		String script = "busybox chmod 777 /dev/input/event2\n";
 		try {
 			java.lang.Process runsum = ex.exec(cmdBecomeSu);
 			int exitVal = 0;
@@ -386,6 +388,19 @@ public class hellojni extends Activity implements OnGestureListener  {
 				//Log.d( "","motion Event");
 				break;
 		}
+		
+		
+	    
+		
+		
+//		if(listItem.size() > 0){
+//			mDbHelper.open();
+//			HashMap<String,Object> m = listItem.get(listItem.size()-1);
+//			mDbHelper.addlog(m.get("time").toString(), m.get("Word").toString());
+//			mDbHelper.close();
+//		}
+		
+		
 	}
 	/**
 	 * touch listene

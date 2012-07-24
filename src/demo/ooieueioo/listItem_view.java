@@ -3,6 +3,8 @@ package demo.ooieueioo;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import demo.ooieueioo.db.DbAdapter;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -16,6 +18,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
+
 
 public class listItem_view extends Activity {
 	private ListView maListViewPerso;
@@ -100,16 +103,16 @@ public class listItem_view extends Activity {
 		});
 
 	}
-	// public void getMap() {
-	// Log.i("getMap()", "Map Size = " + listItem.size());
-	// for (int i = 0; i < listItem.size(); i++) {
-	// HashMap<String, Object> m = listItem.get(i);
-	// m.get("time");
-	// m.get("Word");
-	// Log.i("getMap()", "m.get(time) = " + m.get("time"));
-	// Log.i("getMap()", "m.get(Word) = " + m.get("Word"));
-	// }
-	// }
+	 public void getMap() {
+	 Log.i("getMap()", "Map Size = " + listItem.size());
+	 for (int i = 0; i < listItem.size(); i++) {
+	 HashMap<String, Object> m = listItem.get(i);
+	 m.get("time");
+	 m.get("Word");
+	 Log.i("getMap()", "m.get(time) = " + m.get("time"));
+	 Log.i("getMap()", "m.get(Word) = " + m.get("Word"));
+	 }
+	 }
 
 
 	private void ShowToast(String str) {
