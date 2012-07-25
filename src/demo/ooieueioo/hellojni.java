@@ -42,7 +42,9 @@ public class hellojni extends Activity implements OnGestureListener  {
 
 	public native String stringFromJNI(int i);
 	public native String unimplementedStringFromJNI();
-
+	
+	
+	
 	private Handler hd;
 	private Message msg;
 	private int time = 0;
@@ -68,18 +70,30 @@ public class hellojni extends Activity implements OnGestureListener  {
 		root();
 		Touch_Listene();
 		mDbHelper = new DbAdapter(this);
+//		Thread t2 = new Thread(( new t2()));
+//		t2.start();
+//		String tmp ="";
+//		tmp += stringreturnJNI() +"\n";
+//		Log.i("cxxxxx Debug ", "tmp " + tmp.toString());
+//		stringreturnJNI();
 		
 		// CommandWriter()
-		  /*
-		   * CommandWriter cmd; Thread writer = new Thread((cmd = new
-		   * CommandWriter(hd))); writer.start(); try {
-		   * Thread.currentThread().sleep(1000); } catch (InterruptedException e1)
-		   * { // TODO Auto-generated catch block e1.printStackTrace(); }
-		   * //cmd.addCommand("cd ~/..\n"); //cmd.addCommand("ls\n");
-		   */
+		  
+//		CommandWriter cmd;
+//		Thread writer = new Thread((cmd = new CommandWriter(hd)));
+//		writer.start();
+//		try {
+//			Thread.currentThread().sleep(1000);
+//		} catch (InterruptedException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+		
+		// cmd.addCommand("cd ~/..\n"); //cmd.addCommand("ls\n");
+		   
 		// po
 		// try{
-		// new Thread(new t()).start();
+//		 new Thread(new t()).start();
 		// }catch (Exception e) {
 		// // TODO: handle exception
 		// }
@@ -152,7 +166,8 @@ public class hellojni extends Activity implements OnGestureListener  {
 			Text_View.setText("");
 		}
 		//this.Text_View.setText(message_count + "]" + message + "[" + this.Text_View.getText().toString() );  //send message clayder
-		this.Text_View.setText(this.Text_View.getText().toString() +  message );  //send message clayder
+		this.Text_View.append(message);
+//		this.Text_View.setText(this.Text_View.getText().toString() +  message );  //send message clayder
 
 		
 		Log.i("stringFromJNI()", (Total_Click) + "  " + Call_JNI_Text);
@@ -189,7 +204,7 @@ public class hellojni extends Activity implements OnGestureListener  {
 		//		Log.i("NewTextView()", "time == " + Now_Time);
 		return now;
 	}
-	public CharSequence get_Phone_Time() {
+	public static CharSequence get_Phone_Time() {
 		long dtMili = System.currentTimeMillis();
 		Date dt = new Date(dtMili);
 		//yyyy-MM-dd HH:mm:ss)
@@ -243,6 +258,34 @@ public class hellojni extends Activity implements OnGestureListener  {
 		} catch (Exception e) {
 			Log.e("Debug", "Fails to su");
 		}
+	}
+	
+	class t2 implements Runnable {
+
+		public void run() {
+			// TODO Auto-generated method stub
+//			int i = 0;
+			String tmp = "";
+			while (true) {
+				try {
+//					tmp += stringreturnJNI().toString() +"\n";
+					Log.i("t2 Debug ", "tmp " + tmp.toString());
+//					System.out.println(i++ + ".......");
+//					msg = new Message();
+//					msg.what = 0;
+//					msg.arg1 = time++;
+//					hd.sendMessage(msg);
+					// NewTextView();
+					Thread.currentThread();
+					Thread.sleep(1000);
+					//Thread.currentThread().sleep(500);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+			}
+
+		}
+
 	}
 
 	class t implements Runnable {
@@ -393,12 +436,12 @@ public class hellojni extends Activity implements OnGestureListener  {
 	    
 		
 		
-//		if(listItem.size() > 0){
-//			mDbHelper.open();
-//			HashMap<String,Object> m = listItem.get(listItem.size()-1);
-//			mDbHelper.addlog(m.get("time").toString(), m.get("Word").toString());
-//			mDbHelper.close();
-//		}
+		if(listItem.size() > 0){
+			mDbHelper.open();
+			HashMap<String,Object> m = listItem.get(listItem.size()-1);
+			mDbHelper.addlog(m.get("time").toString(), m.get("Word").toString());
+			mDbHelper.close();
+		}
 		
 		
 	}
@@ -412,7 +455,16 @@ public class hellojni extends Activity implements OnGestureListener  {
 			//public abstract boolean onTouch (View v, MotionEvent event)
 			public boolean onTouch(View arg0, MotionEvent event) {
 				touchAction(event);
+			
+				
+//				call_touchAction cmd;
+//				Thread t = new Thread(( new call_touchAction(event)));
+//				t.start();
+				
+				
+				 
 				return detector.onTouchEvent(event);
+				
 			}
 
 		});
@@ -421,6 +473,8 @@ public class hellojni extends Activity implements OnGestureListener  {
 
 			public boolean onTouch(View arg0, MotionEvent event) {
 				touchAction(event);
+//				Thread t = new Thread(( new call_touchAction(event)));
+//				t.start();
 				return false; //+po.0723
 				//return detector.onTouchEvent(event);
 			}
@@ -445,33 +499,48 @@ public class hellojni extends Activity implements OnGestureListener  {
 		toast.show();
 	}
 	
-	
-	public boolean onDown(MotionEvent e) {
-		// TODO Auto-generated method stub
-//		touchAction(e);
-		return false;
-	}
-	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-			float velocityY) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	public void onLongPress(MotionEvent e) {
-		// TODO Auto-generated method stub
-		touchAction(e);
-	}
-	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
-			float distanceY) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	public void onShowPress(MotionEvent e) {
-		// TODO Auto-generated method stub
+	class call_touchAction implements Runnable {
+		MotionEvent T_event;
+		
+		call_touchAction(MotionEvent event) {
+			this.T_event = event;
+		}
+		
+		public void run() {
+			// TODO Auto-generated method stub
+			touchAction(T_event);
+		}
+//		public void evenr(MotionEvent event){
+//			this.T_event = event;
+//		}
 		
 	}
+	
+	/**
+	 * ·Æ¹«DOWM
+	 */
+	public boolean onDown(MotionEvent arg0) {
+		return true;
+	}
+
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+			float velocityY) {
+		return true;
+	}
+
+	public void onLongPress(MotionEvent e) {
+	}
+
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+			float distanceY) {
+		return true;
+	}
+
+	public void onShowPress(MotionEvent e) {
+	}
+
 	public boolean onSingleTapUp(MotionEvent e) {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 	
 }

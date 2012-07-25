@@ -1,6 +1,10 @@
 package demo.ooieueioo;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import demo.ooieueioo.db.DbAdapter;
@@ -10,6 +14,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -128,5 +133,59 @@ public class listItem_view extends Activity {
 						// TODO Auto-generated method stub
 					}
 				}).show();
+	}
+	public void DBtoSD_btn(View view){
+		String time = get_Phone_Time().toString();
+		String originalFilePath = "/data/data/demo.ooieueioo/databases/hi_test";
+		String destFilePath = "/sdcard/i_mobile/";
+		Check_file();
+		try {
+			copyFile(originalFilePath, destFilePath + time + "DB");
+			ShowDialog("DB is sava Success!!\n" + "PATH:/sdcard/i_mobile/" + time + "DB");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();			
+		}
+
+	}
+	private void copyFile(String originalFileName, String destFileName) 
+            throws Exception {
+
+        byte[] buffer = new byte[4096]; 
+        int size = -1;
+
+        FileInputStream fis = new FileInputStream(originalFileName); 
+        FileOutputStream fos = new FileOutputStream(destFileName);
+
+        while ((size = fis.read(buffer, 0, buffer.length)) != -1) { 
+            fos.write(buffer, 0, size); 
+        }
+
+        fis.close(); 
+        fos.close();
+
+        fis = null; 
+        fos = null;
+
+    }
+	private CharSequence get_Phone_Time() {
+		long dtMili = System.currentTimeMillis();
+		Date dt = new Date(dtMili);
+		//yyyy-MM-dd HH:mm:ss)
+		CharSequence Now_Time  = DateFormat.format("yyyy_MM_dd_hh_mm_ss", dt.getTime());
+		//		Log.i("NewTextView()", "time == " + Now_Time);
+		return Now_Time;
+	}
+	private void Check_file(){
+		String tSDCardPath = android.os.Environment.getExternalStorageDirectory()
+				.getAbsolutePath();
+		File tDataPath = new File(tSDCardPath + "/i_mobile/");
+
+		if (tDataPath.exists() == false) {
+			tDataPath.mkdirs();
+			ShowToast("new a DBdir");
+		} else {
+			ShowToast("hava SDCardPath");
+		}
 	}
 }

@@ -108,6 +108,20 @@ Java_demo_ooieueioo_hellojni_stringFromJNI( JNIEnv* env,
 	ptrRtn = ReturnState(ptrTest);
 	return (*env)->NewStringUTF(env, ptrRtn);
 }
+	//----------------------------
+	/*bool g_bThreadComtinue = true;
+	int NyThread(void pVar){
+		while(g_bThreadComtinue){
+			CMyDlg * pDlg = (CMyDlg*)pVar;
+			//aaad
+		};
+		return 0;
+	}
+	void CMyDlg::OnOpenThread(){
+		m_thread = AfxBeginThread(MyThread, (void)this);
+	}*/
+	//----------------------------
+	
 
 char bufmessage[1024];
 int open_switch = 0;
