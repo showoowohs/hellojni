@@ -234,7 +234,7 @@ public class hellojni extends Activity implements OnGestureListener  {
 	private void root() {
 		Runtime ex = Runtime.getRuntime();
 		String cmdBecomeSu = "su";
-		String script = "busybox chmod 777 /dev/input/event1\n";
+		String script = "busybox chmod 777 /dev/input/event2\n";
 		try {
 			java.lang.Process runsum = ex.exec(cmdBecomeSu);
 			int exitVal = 0;
@@ -432,9 +432,6 @@ public class hellojni extends Activity implements OnGestureListener  {
 				break;
 		}
 		
-		
-	    	
-		
 
 		if(listItem.size() > 0){
 			mDbHelper.open();
@@ -443,8 +440,6 @@ public class hellojni extends Activity implements OnGestureListener  {
 			mDbHelper.close();
 		}
 
-		
-		
 	}
 	/**
 	 * touch listene
@@ -519,7 +514,11 @@ public class hellojni extends Activity implements OnGestureListener  {
 	
 	/**
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * �ƹ�DOWM
+=======
+	 * �ƹ�DOWM
+>>>>>>> 6d3800e8e7fac351054ef83c24fe86fcc1b996c9
 =======
 	 * �ƹ�DOWM
 >>>>>>> 6d3800e8e7fac351054ef83c24fe86fcc1b996c9
