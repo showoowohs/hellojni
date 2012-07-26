@@ -14,6 +14,9 @@
 #define EV_REL  0x02
 #define EV_ABS	0x03
 
+
+#define _FILE_OUT_ 1
+
 /*
  * Synchronization events.
  */
@@ -86,6 +89,7 @@ char ev_type[64];
 char ev_code[64];
 char tmp_buffer[256];
 char out_buffer[256];
+char std_buffer[256];
 char real_buffer[256];
 unsigned char point_counter=0;
 unsigned char sys_counter=0;
@@ -119,6 +123,7 @@ void * threadJobRun()
 	       {
 	           if(return_state)
 	           {
+             
 	       	   //strcpy (queue_buffer[front_queue],strPtr);
 	       	   sprintf (queue_buffer[front_queue] ,"%s",strPtr);
 	       	 //sprintf (queue_buffer[front_queue] ,"[%d] %d : %s [%d]",queueCnt,strlen (strPtr),strPtr,return_state);
@@ -134,7 +139,7 @@ void * threadJobRun()
 	              front_queue=0;
                   end_queue=0;  
                   queueCnt=0;
-           	      strcpy (queue_buffer[front_queue],"ERROR");
+           	      sprintf (queue_buffer[front_queue],"ERROR %d",queueCnt);
 	       	      front_queue++;
 	       	      queueCnt++;
 	            }
@@ -212,20 +217,6 @@ Java_demo_ooieueioo_hellojni_stringFromJNI( JNIEnv* env,
      ptrRtn=return_buffer;
 	return (*env)->NewStringUTF(env, ptrRtn);
 }
-	//----------------------------
-	/*bool g_bThreadComtinue = true;
-	int NyThread(void pVar){
-		while(g_bThreadComtinue){
-			CMyDlg * pDlg = (CMyDlg*)pVar;
-			//aaad
-		};
-		return 0;
-	}
-	void CMyDlg::OnOpenThread(){
-		m_thread = AfxBeginThread(MyThread, (void)this);
-	}*/
-	//----------------------------
-	
 
 char bufmessage[1024];
 int open_switch = 0;
@@ -233,13 +224,9 @@ int fd;
 //add
 void open_devices(int start){
 	if(start == 1 && open_switch == 0){
-
 		fd = open("/dev/input/event1", O_RDONLY );
 		//////// thread
 		pthread_create( &thread, NULL, threadJobRun, NULL);
-
-		//fd = open("/dev/input/event2", O_RDONLY );
-
 		open_switch = 1;
 	}
 }
@@ -288,12 +275,21 @@ void open_devices(int start){
 				//strcpy (ev_code, "ABS_MT_POSITION_X");
 				sprintf ( tmp_buffer,"X%02d[%05d]-",point_counter,evvalue);
 				strcat  (out_buffer,tmp_buffer);
+				#ifdef _FILE_OUT_
+				sprintf ( tmp_buffer,"X;%02d;%05d;",point_counter,evvalue);
+				strcat  ( std_buffer,tmp_buffer);
+				#endif
 			//	sprintf(bufmessage, out_buffer );
 				break;
 			case ABS_MT_POSITION_Y :
 				//strcpy (ev_code, "ABS_MT_POSITION_Y");
 				sprintf ( tmp_buffer,"Y%02d[%05d]-",point_counter,evvalue);
 				strcat  (out_buffer,tmp_buffer);
+			    #ifdef _FILE_OUT_
+				sprintf ( tmp_buffer,"Y;%02d;%05d;",point_counter,evvalue);
+				strcat  ( std_buffer,tmp_buffer);
+				#endif
+			
 			//	sprintf(bufmessage, out_buffer );
 				break;
 			case ABS_MT_TOOL_TYPE :
@@ -373,7 +369,21 @@ char* ReturnState(char *message){
 							printf("\n");
 							
 							strcpy (real_buffer, out_buffer);
+							
+							
 							return_state=1;
+							#ifdef  _FILE_OUT_
+	           	             FILE* file_desc; 
+                  			 file_desc = fopen("/mnt/sdcard/std.txt", "ab+");
+                              if (file_desc != NULL)
+                                {	  
+                                    fprintf( file_desc, "%s\n",std_buffer);
+                                    fclose (file_desc);
+                                 }
+                                 
+                             strcpy ( std_buffer,"");
+							    
+                            #endif       
 							sprintf ( out_buffer,"P%03d:",sys_counter);
 							sys_counter++;
 							//printf("Read X:%d, Y:%d\n, Btn_Touch:%d",tmpP.x,tmpP.y,tmpP.btn_touch);
