@@ -7,7 +7,6 @@
 #include <limits.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <pthread.h>
 
 #define EV_SYN	0x00
 #define EV_KEY	0x01
@@ -86,7 +85,6 @@ char ev_type[64];
 char ev_code[64];
 char tmp_buffer[256];
 char out_buffer[256];
-char real_buffer[256];
 unsigned char point_counter=0;
 unsigned char sys_counter=0;
 
@@ -102,7 +100,6 @@ unsigned char  queueCnt=0;
 
 char queue_buffer[256][256];
 char return_buffer[256];
-char return_state=0;
 
 
 void * threadJobRun()
@@ -112,34 +109,14 @@ void * threadJobRun()
 	
         while( 1 )
 		{
-			usleep(1);
-			return_state=0;
+			sleep(1);
 	     	strPtr = ReturnState(ptrTest);
-	        if( ( strlen (strPtr) >2) && (queueCnt <250))
+	        if( strlen ( (strPtr) >2) && (queueCnt <250))
 	       {
-	           if(return_state)
-	           {
-	       	   //strcpy (queue_buffer[front_queue],strPtr);
-	       	   sprintf (queue_buffer[front_queue] ,"%s",strPtr);
-	       	 //sprintf (queue_buffer[front_queue] ,"[%d] %d : %s [%d]",queueCnt,strlen (strPtr),strPtr,return_state);
+	       	   strcpy (queue_buffer[front_queue],strPtr);
 	       	   front_queue++;
 	       	   queueCnt++;
-	       	   }
 	        } 	
-	        else
-	        {
-	          
-	            if (queueCnt >=200)
-	            {
-	              front_queue=0;
-                  end_queue=0;  
-                  queueCnt=0;
-           	      strcpy (queue_buffer[front_queue],"ERROR");
-	       	      front_queue++;
-	       	      queueCnt++;
-	            }
-	         
-	        }
 		}
 
 /*	JNIEnv *env;
@@ -198,6 +175,12 @@ Java_demo_ooieueioo_hellojni_stringFromJNI( JNIEnv* env,
 	char test[] = "my name po";
 	ptrTest = test;
 	char *ptrRtn = NULL;
+	if ( start == 1 )
+	{
+		
+	  // thread
+	  pthread_create( &thread, NULL, threadJobRun, NULL);	
+	}
 	
 	if (queueCnt )
     {
@@ -220,8 +203,6 @@ int fd;
 void open_devices(int start){
 	if(start == 1 && open_switch == 0){
 		fd = open("/dev/input/event1", O_RDONLY );
-		//////// thread
-		pthread_create( &thread, NULL, threadJobRun, NULL);
 		open_switch = 1;
 	}
 }
@@ -330,7 +311,7 @@ char* ReturnState(char *message){
 	FD_ZERO( &readfds );
 	FD_SET( fd , &readfds );
 	printf(" open device node ok\n" );
-	
+	strcpy ( out_buffer,"point start\n");
 	while( 1 )	{
 	if( select( fd+1, &readfds, NULL, NULL, NULL ) >0 )
 	{
@@ -347,15 +328,12 @@ char* ReturnState(char *message){
 						{	 
 							// MT_Sync : Multitouch event end
 							//printf("%s", out_buffer ); 
-							strcpy ( bufmessage,real_buffer);
+							strcpy ( bufmessage,out_buffer);
 							return bufmessage;
 						}else if (SYN_REPORT==ev.code){   
 							printf("%s", out_buffer );  
 							point_counter=0; 
 							printf("\n");
-							
-							strcpy (real_buffer, out_buffer);
-							return_state=1;
 							sprintf ( out_buffer,"P%03d:",sys_counter);
 							sys_counter++;
 							//printf("Read X:%d, Y:%d\n, Btn_Touch:%d",tmpP.x,tmpP.y,tmpP.btn_touch);
@@ -378,7 +356,7 @@ char* ReturnState(char *message){
 
 				case EV_ABS :
 					convert_evcode(ev.code, ev.value);
-				
+				//	return bufmessage;
 					break; ///// EV_ABS
 
 
@@ -387,15 +365,55 @@ char* ReturnState(char *message){
 					sprintf(ev_type,"unknown data type = %04x",ev.type);
 					//po add
 					sprintf(bufmessage, ev_type );
-					//return bufmessage;
+					return bufmessage;
 			}
-			
+			//return bufmessage;
+			//printf("%s, code= %s, Value =%d\n", ev_type, ev_code, ev.value ); 
+			//	} /// REMOVE EV_SYN	
+			/*
+			   if( ev.type == EV_KEY )
+			   {
+			   printf(" Get Key = %d\n", ev.value );
+			   }
+			   else if( ev.type == EV_REL )
+			   {
+			   printf( "Get relative value \n" );
+			   }
+			   else if( ev.type == EV_ABS )
+			   {
+			   if( ev.code == ABS_X )	
+			   {
+			   printf( "Get abs. X = %d \n", ev.value );	
+
+			   }
+			   else if( ev.code == ABS_Y )
+			   {
+			   printf( "Get abs. Y = %d \n", ev.value );
+			   }
+			   else if( ev.code == ABS_X_2 )	
+			   {
+			   printf( "Get abs. X-2 = %d \n", ev.value );	
+
+			   }
+			   else if( ev.code == ABS_Y_2 )
+			   {
+			   printf( "Get abs. Y-2 = %d \n", ev.value );
+			   }
+			   else {
+			   printf(" Get unknown data type = %04x, code = %04x, Value =%d\n", ev.type, ev.code, ev.value ); 
+			   }
+			   }
+			   else
+			   {
+			   printf(" Get unknown data type = %04x, code = %04x, Value =%d\n", ev.type, ev.code, ev.value ); 
+			   }
+			 */
 	}
 	else
 	{
 		printf(" Nothing read \n" );
 		sprintf(bufmessage, " Nothing read \n" );
-		//return bufmessage;
+		return bufmessage;
 	} // if select
 	
 	}
@@ -404,5 +422,5 @@ char* ReturnState(char *message){
 //} else {
 
 //}
-return NULL;
+return out_buffer;
 }

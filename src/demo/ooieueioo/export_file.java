@@ -2,6 +2,7 @@ package demo.ooieueioo;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -66,7 +67,7 @@ public class export_file extends hellojni{
                         .append(System.getProperty(
                                 "line.separator"));
             }
-            contents.append("\n\n\n// " + get_Phone_Time() + " add\n\n");
+            contents.append("\n\n\n------------ // " + get_Phone_Time() + " add ------------\n\n");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -132,4 +133,5 @@ public class export_file extends hellojni{
 //		Log.i("Check_Status()", "Check_Status " + Sava_Status);
 		return this.Create_Status;
 	}
+	
 }
