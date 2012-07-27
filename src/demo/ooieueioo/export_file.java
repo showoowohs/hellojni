@@ -35,7 +35,7 @@ public class export_file extends hellojni{
 	        // open  
 	        myFile = new File(SDFile.getAbsolutePath()  
 	                + File.separator + "MyFile.txt");  
-	  
+	        
 	        // if not file add new file   
 	        if (!myFile.exists()) {  
 	            myFile.createNewFile();

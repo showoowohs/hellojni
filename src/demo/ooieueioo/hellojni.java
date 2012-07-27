@@ -2,8 +2,9 @@ package demo.ooieueioo;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;       //+cy.0629
+import java.text.SimpleDateFormat; //+cy.0629
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,20 +32,18 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.util.Log;                    //+cy.0629
+import android.util.Log; //+cy.0629
 
-
-public class hellojni extends Activity implements OnGestureListener  {
+public class hellojni extends Activity implements OnGestureListener {
 
 	static {
 		System.loadLibrary("hellojni");
 	}
 
 	public native String stringFromJNI(int i);
+
 	public native String unimplementedStringFromJNI();
-	
-	
-	
+
 	private Handler hd;
 	private Message msg;
 	private int time = 0;
@@ -58,9 +57,12 @@ public class hellojni extends Activity implements OnGestureListener  {
 	private GestureDetector detector;
 	private ArrayList<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>();
 	private DbAdapter mDbHelper;
-	  //Date date = new Date();     //cy.0629.test.   If you add "new Data()" into here, the result cannot update data.
-	  //DateFormat dateformat;      //cy.0629.test
-	
+	private Thread t;
+
+	// Date date = new Date(); //cy.0629.test. If you add "new Data()" into
+	// here, the result cannot update data.
+	// DateFormat dateformat; //cy.0629.test
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -68,37 +70,36 @@ public class hellojni extends Activity implements OnGestureListener  {
 		setContentView(R.layout.main);
 		initUI();
 		root();
-		Touch_Listene();
+		// Touch_Listene();
 		mDbHelper = new DbAdapter(this);
-//		Thread t2 = new Thread(( new t2()));
-//		t2.start();
-//		String tmp ="";
-//		tmp += stringreturnJNI() +"\n";
-//		Log.i("cxxxxx Debug ", "tmp " + tmp.toString());
-//		stringreturnJNI();
-		
+		t = new Thread((new call_JNI_Thread()));
+		t.start();
+		// String tmp ="";
+		// tmp += stringreturnJNI() +"\n";
+		// Log.i("cxxxxx Debug ", "tmp " + tmp.toString());
+		// stringreturnJNI();
+
 		// CommandWriter()
-		  
-//		CommandWriter cmd;
-//		Thread writer = new Thread((cmd = new CommandWriter(hd)));
-//		writer.start();
-//		try {
-//			Thread.currentThread().sleep(1000);
-//		} catch (InterruptedException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-		
+
+		// CommandWriter cmd;
+		// Thread writer = new Thread((cmd = new CommandWriter(hd)));
+		// writer.start();
+		// try {
+		// Thread.currentThread().sleep(1000);
+		// } catch (InterruptedException e1) {
+		// // TODO Auto-generated catch block
+		// e1.printStackTrace();
+		// }
+
 		// cmd.addCommand("cd ~/..\n"); //cmd.addCommand("ls\n");
-		   
+
 		// po
 		// try{
-//		 new Thread(new t()).start();
+		// new Thread(new t()).start();
 		// }catch (Exception e) {
 		// // TODO: handle exception
 		// }
-		
-		
+
 		hd = new Handler() {
 			public void handleMessage(Message msg) {
 				// if()
@@ -106,7 +107,7 @@ public class hellojni extends Activity implements OnGestureListener  {
 
 				System.out.println("        handler" + msg.arg1);
 				if (msg.what == 0) {
-					NewTextView(msg.arg1);      // <---  send message :)
+					NewTextView(msg.arg1); // <--- send message :)
 				} else if (msg.what == 1) {
 					if (toast != null)
 						toast.cancel();
@@ -121,68 +122,97 @@ public class hellojni extends Activity implements OnGestureListener  {
 		// NewTextView();
 	}
 
-	private void initUI() {
-		this.Touch_View = (LinearLayout)findViewById(R.id.Touch_View);
-		this.ScrollView = (ScrollView)findViewById(R.id.ScrollView);
-		this.tv = (TextView) findViewById(R.id.tv);
-		this.Text_View = (TextView) findViewById(R.id.Text_View);
-		this.detector = new GestureDetector(this);//+po.0623 del
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		this.t.interrupt();
+		super.onDestroy();
+
 	}
 
-	
-//      -cy.0629.del...... Build new function Touch_Listene
-//	private void Touch_Listene() {
-//		this.Touch_View.setOnTouchListener(new OnTouchListener() {
-//
-//			public boolean onTouch(View arg0, MotionEvent arg1) {
-//				 System.out.println("Touch_Listene");
-//				return detector.onTouchEvent(arg1);
-//			}
-//
-//		});
-//		
-//		this.ScrollView.setOnTouchListener(new OnTouchListener() {
-//
-//			public boolean onTouch(View arg0, MotionEvent arg1) {
-//				 System.out.println("ScrollView");
-//				return detector.onTouchEvent(arg1);
-//			}
-//
-//		});
-//	}
+	private void initUI() {
+		this.Touch_View = (LinearLayout) findViewById(R.id.Touch_View);
+		this.ScrollView = (ScrollView) findViewById(R.id.ScrollView);
+		this.tv = (TextView) findViewById(R.id.tv);
+		this.Text_View = (TextView) findViewById(R.id.Text_View);
+		this.detector = new GestureDetector(this);// +po.0623 del
+	}
+
+	private void ScrollView_down() {
+		int ScrollView_Height = this.ScrollView.getHeight();
+		Log.i("ScrollView_Height", "ScrollView_Height == " + ScrollView_Height);
+		this.ScrollView.scrollTo(ScrollView_Height, ScrollView_Height);
+	}
+
+	// -cy.0629.del...... Build new function Touch_Listene
+	// private void Touch_Listene() {
+	// this.Touch_View.setOnTouchListener(new OnTouchListener() {
+	//
+	// public boolean onTouch(View arg0, MotionEvent arg1) {
+	// System.out.println("Touch_Listene");
+	// return detector.onTouchEvent(arg1);
+	// }
+	//
+	// });
+	//
+	// this.ScrollView.setOnTouchListener(new OnTouchListener() {
+	//
+	// public boolean onTouch(View arg0, MotionEvent arg1) {
+	// System.out.println("ScrollView");
+	// return detector.onTouchEvent(arg1);
+	// }
+	//
+	// });
+	// }
 
 	private void NewTextView(int Total_Click) {
 		System.out.println("You Click : " + Total_Click);
 		String Call_JNI_Text;
-		//String Call_JNI_Text_1;                                       // +clayder.0629.test
-		Call_JNI_Text = stringFromJNI(1).toString();          
-		//Call_JNI_Text_1 = stringFromJNI(2).toString();    // +clayder.0629.test
-		
-		this.tv.setText("You Click : " + (Total_Click));
-	     //  String message = get_Now_Time().toString() + Call_JNI_Text + "\n ";      //+cy.test. modify
-		String message =  Call_JNI_Text + "\n";      //+cy.0706
-	        message_count++;
-		if(message_count % 100 == 0){
-			Text_View.setText("");
-		}
-		//this.Text_View.setText(message_count + "]" + message + "[" + this.Text_View.getText().toString() );  //send message clayder
-		this.Text_View.append(message);
-//		this.Text_View.setText(this.Text_View.getText().toString() +  message );  //send message clayder
+		// String Call_JNI_Text_1; // +clayder.0629.test
+		Call_JNI_Text = stringFromJNI(1).toString();
+		// Call_JNI_Text_1 = stringFromJNI(2).toString(); // +clayder.0629.test
 
-		
+		this.tv.setText("You Click : " + (Total_Click));
+		// String message = get_Now_Time().toString() + Call_JNI_Text + "\n ";
+		// //+cy.test. modify
+		if (Call_JNI_Text.equalsIgnoreCase("")) {
+
+		} else {
+			String message = Call_JNI_Text + "\n"; // +cy.0706
+			message_count++;
+			if (message_count % 100 == 0) {
+				Text_View.setText("");
+			}
+			// this.Text_View.setText(message_count + "]" + message + "[" +
+			// this.Text_View.getText().toString() ); //send message clayder
+			this.Text_View.append(message);
+			setMap(message);
+			// if(listItem.size() > 0){
+			// mDbHelper.open();
+			// HashMap<String,Object> m = listItem.get(listItem.size()-1);
+			// mDbHelper.addlog(m.get("time").toString(),
+			// m.get("Word").toString());
+			// mDbHelper.close();
+			// }
+		}
+
+		// this.Text_View.setText(this.Text_View.getText().toString() + message
+		// ); //send message clayder
+		ScrollView_down();
+
 		Log.i("stringFromJNI()", (Total_Click) + "  " + Call_JNI_Text);
-		setMap(Call_JNI_Text);
-//		getMap();
+		// setMap(Call_JNI_Text);
+		// getMap();
 		Call_JNI_Text = " ";
-//		 tv.append("Now Time : " +(this.time)+" "+ stringFromJNI());
+		// tv.append("Now Time : " +(this.time)+" "+ stringFromJNI());
 		// setContentView(tv);
 	}
 
 	private String setMap(String str) {
 		Log.i("setMap(String str)", "str = " + str.toString());
-		
-		HashMap<String,Object> map = new HashMap<String, Object>();
-		
+
+		HashMap<String, Object> map = new HashMap<String, Object>();
+
 		map.put("time", get_Now_Time().toString());
 		map.put("Word", str.toString());
 
@@ -191,42 +221,46 @@ public class hellojni extends Activity implements OnGestureListener  {
 		listItem.add(map);
 		return str;
 	}
+
 	private CharSequence get_Now_Time() {
 		long dtMili = System.currentTimeMillis();
-		Date dt = new Date(dtMili);    //-clayder.0702
-		//yyyy-MM-dd HH:mm:ss)
-		
-		SimpleDateFormat formatter   =  new SimpleDateFormat("[ss.SSS]");
-		String now = formatter.format( new Date());
-		//CharSequence Now_Time  = DateFormat.format("yyyy, MM/dd, hh:mm:ss", dt.getTime());
-		//----- clayder,0626
+		Date dt = new Date(dtMili); // -clayder.0702
+		// yyyy-MM-dd HH:mm:ss)
 
-		//		Log.i("NewTextView()", "time == " + Now_Time);
+		SimpleDateFormat formatter = new SimpleDateFormat("[ss.SSS]");
+		String now = formatter.format(new Date());
+		// CharSequence Now_Time = DateFormat.format("yyyy, MM/dd, hh:mm:ss",
+		// dt.getTime());
+		// ----- clayder,0626
+
+		// Log.i("NewTextView()", "time == " + Now_Time);
 		return now;
 	}
+
 	public static CharSequence get_Phone_Time() {
 		long dtMili = System.currentTimeMillis();
 		Date dt = new Date(dtMili);
-		//yyyy-MM-dd HH:mm:ss)
-		CharSequence Now_Time  = DateFormat.format("yyyy, MM/dd, hh:mm:ss", dt.getTime());
-		//		Log.i("NewTextView()", "time == " + Now_Time);
+		// yyyy-MM-dd HH:mm:ss)
+		CharSequence Now_Time = DateFormat.format("yyyy, MM/dd, hh:mm:ss",
+				dt.getTime());
+		// Log.i("NewTextView()", "time == " + Now_Time);
 		return Now_Time;
 	}
-	
-	private void getMap(){
+
+	private void getMap() {
 		Log.i("getMap()", "Map Size = " + listItem.size());
-    	for(int i = 0 ;i < listItem.size(); i++){
-        	HashMap<String,Object> m = listItem.get(i);
-    			m.get("time");
-                m.get("Word");
-                Log.i("getMap()", "m.get(time) = " + m.get("time"));
-                Log.i("getMap()", "m.get(Word) = " + m.get("Word"));
-        }
-    }
-	public void open_data(View v){
-//		Log.i("open_data(View v)", "Onclick");
-		Intent newIntent = new Intent(hellojni.this,
-              listItem_view.class);
+		for (int i = 0; i < listItem.size(); i++) {
+			HashMap<String, Object> m = listItem.get(i);
+			m.get("time");
+			m.get("Word");
+			Log.i("getMap()", "m.get(time) = " + m.get("time"));
+			Log.i("getMap()", "m.get(Word) = " + m.get("Word"));
+		}
+	}
+
+	public void open_data(View v) {
+		// Log.i("open_data(View v)", "Onclick");
+		Intent newIntent = new Intent(hellojni.this, listItem_view.class);
 		newIntent.putExtra("HashMap", listItem);
 		startActivityForResult(newIntent, 7);
 	}
@@ -259,26 +293,39 @@ public class hellojni extends Activity implements OnGestureListener  {
 			Log.e("Debug", "Fails to su");
 		}
 	}
-	
-	class t2 implements Runnable {
+
+	class call_JNI_Thread implements Runnable {
 
 		public void run() {
 			// TODO Auto-generated method stub
-//			int i = 0;
-			String tmp = "";
-			while (true) {
+			// int i = 0;
+
+			while (!t.currentThread().isInterrupted()) {
 				try {
-//					tmp += stringreturnJNI().toString() +"\n";
-					Log.i("t2 Debug ", "tmp " + tmp.toString());
-//					System.out.println(i++ + ".......");
-//					msg = new Message();
-//					msg.what = 0;
-//					msg.arg1 = time++;
-//					hd.sendMessage(msg);
+					set_msg();
+
+					// if(listItem.size() > 0){
+					// mDbHelper.open();
+					// HashMap<String,Object> m =
+					// listItem.get(listItem.size()-1);
+					// mDbHelper.addlog(m.get("time").toString(),
+					// m.get("Word").toString());
+					// mDbHelper.close();
+					// }
+					// tmp += stringreturnJNI().toString() +"\n";
+					// Log.i("t2 Debug ", "tmp " + tmp.toString());
+					// System.out.println(i++ + ".......");
+					// msg = new Message();
+					// msg.what = 0;
+					// msg.arg1 = time++;
+					// hd.sendMessage(msg);
 					// NewTextView();
 					Thread.currentThread();
-					Thread.sleep(1000);
-					//Thread.currentThread().sleep(500);
+					Thread.sleep(10);
+					// Thread.currentThread().sleep(500);
+				} catch (InterruptedException e) {
+
+					// ShowToast("Thread interrupt");
 				} catch (Exception e) {
 					// TODO: handle exception
 				}
@@ -304,7 +351,7 @@ public class hellojni extends Activity implements OnGestureListener  {
 					// NewTextView();
 					Thread.currentThread();
 					Thread.sleep(500);
-					//Thread.currentThread().sleep(500);
+					// Thread.currentThread().sleep(500);
 				} catch (Exception e) {
 					// TODO: handle exception
 				}
@@ -357,7 +404,7 @@ public class hellojni extends Activity implements OnGestureListener  {
 					try {
 						Thread.currentThread();
 						Thread.sleep(10);
-						//Thread.currentThread().sleep(1000);
+						// Thread.currentThread().sleep(1000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -375,7 +422,7 @@ public class hellojni extends Activity implements OnGestureListener  {
 				try {
 					Thread.currentThread();
 					Thread.sleep(10);
-					//Thread.currentThread().sleep(10);
+					// Thread.currentThread().sleep(10);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -404,63 +451,62 @@ public class hellojni extends Activity implements OnGestureListener  {
 			}
 		}
 	}
-	
-	private void set_msg(){
+
+	private void set_msg() {
 		msg = new Message();
 		msg.arg1 = ++Total_Click;
 		hd.sendMessage(msg);
 	}
-	private void touchAction(MotionEvent event)         //+cy.0629. add new function include down move up
+
+	private void touchAction(MotionEvent event) // +cy.0629. add new function
+												// include down move up
 	{
 		// event.getAction() type ==> 0: down 1:up 2: move
-		switch(event.getAction())
-		{
-			case 0:
-				set_msg();
-				//NewTextView(msg.arg1);      // <---  send message :)
-				//Log.d( "","down Event");
-				break;
-			case 1:
-				set_msg();
-				//NewTextView(msg.arg1);      // <---  send message :)
-				//Log.d( "","up Event");
-				break;
-			case 2:
-				set_msg();
-				//NewTextView(msg.arg1);      // <---  send message :)
-				//Log.d( "","motion Event");
-				break;
+		switch (event.getAction()) {
+		case 0:
+			set_msg();
+			// NewTextView(msg.arg1); // <--- send message :)
+			// Log.d( "","down Event");
+			break;
+		case 1:
+			set_msg();
+			// NewTextView(msg.arg1); // <--- send message :)
+			// Log.d( "","up Event");
+			break;
+		case 2:
+			set_msg();
+			// NewTextView(msg.arg1); // <--- send message :)
+			// Log.d( "","motion Event");
+			break;
 		}
-		
 
-		if(listItem.size() > 0){
+		if (listItem.size() > 0) {
 			mDbHelper.open();
-			HashMap<String,Object> m = listItem.get(listItem.size()-1);
-			mDbHelper.addlog(m.get("time").toString(), m.get("Word").toString());
+			HashMap<String, Object> m = listItem.get(listItem.size() - 1);
+			mDbHelper
+					.addlog(m.get("time").toString(), m.get("Word").toString());
 			mDbHelper.close();
 		}
 
 	}
+
 	/**
 	 * touch listene
 	 */
-	private void Touch_Listene() {                     //+cy.0629. add new function
-		//�¦�panel
+	private void Touch_Listene() { // +cy.0629. add new function
+		// �¦�panel
 		this.Touch_View.setOnTouchListener(new OnTouchListener() {
-			
-			//public abstract boolean onTouch (View v, MotionEvent event)
+
+			// public abstract boolean onTouch (View v, MotionEvent event)
 			public boolean onTouch(View arg0, MotionEvent event) {
 				touchAction(event);
-			
-				
-//				call_touchAction cmd;
-//				Thread t = new Thread(( new call_touchAction(event)));
-//				t.start();
-				
-				
-				 
+
+				// call_touchAction cmd;
+				// Thread t = new Thread(( new call_touchAction(event)));
+				// t.start();
+
 				return detector.onTouchEvent(event);
-				
+
 			}
 
 		});
@@ -469,59 +515,54 @@ public class hellojni extends Activity implements OnGestureListener  {
 
 			public boolean onTouch(View arg0, MotionEvent event) {
 				touchAction(event);
-//				Thread t = new Thread(( new call_touchAction(event)));
-//				t.start();
-				return false; //+po.0723
-				//return detector.onTouchEvent(event);
+				// Thread t = new Thread(( new call_touchAction(event)));
+				// t.start();
+				return false; // +po.0723
+				// return detector.onTouchEvent(event);
 			}
 
 		});
 	}
-	public void ShowDialog(String str){
-		AlertDialog.Builder dialog = new AlertDialog.Builder(this);		
-	    dialog.setTitle("Inform")
-	    .setMessage(str.toString())
-	    .setNeutralButton("Exit", new OnClickListener() {
-	            public void onClick(DialogInterface dialog, int which) {
-	                    // TODO Auto-generated method stub
 
-	            }
+	public void ShowDialog(String str) {
+		AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+		dialog.setTitle("Inform").setMessage(str.toString())
+				.setNeutralButton("Exit", new OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
 
-	    }).show();
+					}
+
+				}).show();
 	}
-	public void ShowToast(String str){
+
+	public void ShowToast(String str) {
 		toast = Toast.makeText(hellojni.this, str.toString(),
 				Toast.LENGTH_SHORT);
 		toast.show();
 	}
-	
+
 	class call_touchAction implements Runnable {
 		MotionEvent T_event;
-		
+
 		call_touchAction(MotionEvent event) {
 			this.T_event = event;
 		}
-		
+
 		public void run() {
 			// TODO Auto-generated method stub
 			touchAction(T_event);
 		}
-//		public void evenr(MotionEvent event){
-//			this.T_event = event;
-//		}
-		
+		// public void evenr(MotionEvent event){
+		// this.T_event = event;
+		// }
+
 	}
-	
+
 	/**
-<<<<<<< HEAD
-<<<<<<< HEAD
-	 * �ƹ�DOWM
-=======
-	 * �ƹ�DOWM
->>>>>>> 6d3800e8e7fac351054ef83c24fe86fcc1b996c9
-=======
-	 * �ƹ�DOWM
->>>>>>> 6d3800e8e7fac351054ef83c24fe86fcc1b996c9
+	 * <<<<<<< HEAD <<<<<<< HEAD �ƹ�DOWM ======= �ƹ�DOWM >>>>>>>
+	 * 6d3800e8e7fac351054ef83c24fe86fcc1b996c9 ======= �ƹ�DOWM >>>>>>>
+	 * 6d3800e8e7fac351054ef83c24fe86fcc1b996c9
 	 */
 	public boolean onDown(MotionEvent arg0) {
 		return true;
@@ -546,5 +587,5 @@ public class hellojni extends Activity implements OnGestureListener  {
 	public boolean onSingleTapUp(MotionEvent e) {
 		return true;
 	}
-	
+
 }
