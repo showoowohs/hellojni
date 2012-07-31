@@ -525,16 +525,27 @@ public class hellojni extends Activity implements OnGestureListener {
 		});
 	}
 
-	public void ShowDialog(String str) {
+	private void Show_Exit_Dialog(String str) {
 		AlertDialog.Builder dialog = new AlertDialog.Builder(this);
 		dialog.setTitle("Inform").setMessage(str.toString())
-				.setNeutralButton("Exit", new OnClickListener() {
+				.setNeutralButton("YES", new OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						Exit_APP();						
+					}
+
+				}).setNegativeButton("Cancel", new OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						// TODO Auto-generated method stub
 
 					}
 
 				}).show();
+	}
+	private void Exit_APP(){
+		this.t.interrupt();
+		stringFromJNI(2);
+		this.finish();
 	}
 
 	public void ShowToast(String str) {
@@ -559,12 +570,11 @@ public class hellojni extends Activity implements OnGestureListener {
 		// }
 
 	}
+	public void Exit(View view){
 
-	/**
-	 * <<<<<<< HEAD <<<<<<< HEAD �ƹ�DOWM ======= �ƹ�DOWM >>>>>>>
-	 * 6d3800e8e7fac351054ef83c24fe86fcc1b996c9 ======= �ƹ�DOWM >>>>>>>
-	 * 6d3800e8e7fac351054ef83c24fe86fcc1b996c9
-	 */
+		Show_Exit_Dialog("Do you want to exit?");
+
+	}
 	public boolean onDown(MotionEvent arg0) {
 		return true;
 	}
