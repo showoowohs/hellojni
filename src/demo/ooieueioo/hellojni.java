@@ -126,6 +126,7 @@ public class hellojni extends Activity implements OnGestureListener {
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		this.t.interrupt();
+		stringFromJNI(2);
 		super.onDestroy();
 
 	}
@@ -268,7 +269,7 @@ public class hellojni extends Activity implements OnGestureListener {
 	private void root() {
 		Runtime ex = Runtime.getRuntime();
 		String cmdBecomeSu = "su";
-		String script = "busybox chmod 777 /dev/input/event2\n";
+		String script = "busybox chmod 777 /dev/input/event1\n";
 		try {
 			java.lang.Process runsum = ex.exec(cmdBecomeSu);
 			int exitVal = 0;
@@ -324,7 +325,7 @@ public class hellojni extends Activity implements OnGestureListener {
 					Thread.sleep(10);
 					// Thread.currentThread().sleep(500);
 				} catch (InterruptedException e) {
-
+					break;
 					// ShowToast("Thread interrupt");
 				} catch (Exception e) {
 					// TODO: handle exception

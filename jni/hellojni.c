@@ -198,7 +198,9 @@ Java_demo_ooieueioo_hellojni_stringFromJNI( JNIEnv* env,
 	//int i = 0;
 	//return i;
 	//    return (*env)->NewStringUTF(env, "Hello from JNI !");
+	
 	open_devices(start);
+	
 	char *ptrTest = NULL;
 	char test[] = "my name po";
 	ptrTest = test;
@@ -221,9 +223,14 @@ Java_demo_ooieueioo_hellojni_stringFromJNI( JNIEnv* env,
 char bufmessage[1024];
 int open_switch = 0;
 int fd;
+
 //add
 void open_devices(int start){
-	if(start == 1 && open_switch == 0){
+	
+	if(start == 2 && open_switch == 1){
+		//kill
+		pthread_exit(NULL);
+	}else if(start == 1 && open_switch == 0){
 		fd = open("/dev/input/event1", O_RDONLY );
 		//////// thread
 		pthread_create( &thread, NULL, threadJobRun, NULL);
